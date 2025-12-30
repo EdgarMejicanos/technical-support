@@ -34,6 +34,16 @@ class UserResource extends Resource
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 
+                Forms\Components\Select::make('role')
+                    ->label('Rol')
+                    ->options([
+                        'admin'    => 'Administrador',
+                        'tecnico'  => 'Técnico',
+                        'atencion' => 'Atención al cliente',
+                    ])
+                    ->required()
+                    ->default('atencion'),
+
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required(fn ($context) => $context === 'create')
@@ -60,6 +70,20 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
+
+                Tables\Columns\BadgeColumn::make('role')
+                    ->label('Rol')
+                    ->colors([
+                        'danger'  => 'admin',
+                        'warning' => 'tecnico',
+                        'success' => 'atencion',
+                    ])
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'admin'    => 'Administrador',
+                        'tecnico'  => 'Técnico',
+                        'atencion' => 'Atención',
+                        default    => $state,
+                    }),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d/m/Y')
