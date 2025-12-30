@@ -9,6 +9,26 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_TECNICO = 'tecnico';
+    public const ROLE_ATENCION = 'atencion';
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isTecnico(): bool
+    {
+        return $this->role === self::ROLE_TECNICO;
+    }
+
+    public function isAtencion(): bool
+    {
+        return $this->role === self::ROLE_ATENCION;
+    }
+
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -21,6 +41,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
