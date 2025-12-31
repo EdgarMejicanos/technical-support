@@ -33,6 +33,14 @@ class TicketResource extends Resource
                     ->required()
                     ->columnSpanFull(),
 
+                Forms\Components\Textarea::make('notes')
+                    ->label('Notas internas')
+                    ->placeholder('Notas adicionales, observaciones, diagnóstico, etc.')
+                    ->columnSpanFull()
+                    ->rows(4)
+                    ->nullable(),
+
+
                 Forms\Components\Select::make('type')
                     ->label('Tipo')
                     ->options([
@@ -99,7 +107,13 @@ class TicketResource extends Resource
                         'repairing' => 'En reparación',
                         'ready' => 'Listo',
                         'delivered' => 'Entregado',
+                        default => ucfirst($state),
                     }),
+
+                Tables\Columns\TextColumn::make('notes')
+                    ->label('Notas')
+                    ->limit(30)
+                    ->toggleable(isToggledHiddenByDefault: true),
 
 
                 Tables\Columns\TextColumn::make('creator.name')
