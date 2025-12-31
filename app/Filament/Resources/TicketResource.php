@@ -74,6 +74,31 @@ class TicketResource extends Resource
                     ->searchable()
                     ->nullable()
                     ->disabled(fn () => auth()->user()->isTecnico()),
+
+                Forms\Components\TextInput::make('total_amount')
+                    ->label('Total a pagar')
+                    ->numeric()
+                    ->prefix('Q')
+                    ->required()
+                    ->reactive(),
+
+                Forms\Components\TextInput::make('paid_amount')
+                    ->label('Abono')
+                    ->numeric()
+                    ->prefix('Q')
+                    ->default(fn ($record) => $record?->initial_amount ?? 0)
+                    ->reactive(),
+
+                Forms\Components\Placeholder::make('pending_amount')
+                    ->label('Saldo pendiente')
+                    ->content(function (callable $get) {
+                        $total = (float) $get('total_amount');
+                        $paid = (float) $get('paid_amount');
+
+                        return 'Q' . number_format(max(0, $total - $paid), 2);
+                    }),
+
+
             ]);
     }
 
@@ -130,6 +155,21 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime('d/m/Y H:i'),
+
+                Tables\Columns\TextColumn::make('pending_amount')
+                    ->label('Saldo pendiente')
+                    ->money('GTQ')
+                    ->color(fn ($state) => $state > 0 ? 'danger' : 'success'),
+
+                Tables\Columns\BadgeColumn::make('payment_status')
+                    ->label('Pago')
+                    ->colors([
+                        'warning' => 'pending',
+                        'success' => 'paid',
+                    ])
+                    ->formatStateUsing(fn ($state) =>
+                    $state === 'paid' ? 'Pagado' : 'Pendiente'
+                    ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
