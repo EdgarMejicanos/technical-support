@@ -38,18 +38,19 @@ class TicketResource extends Resource
                     ->options([
                         'pc' => 'Computadora',
                         'printer' => 'Impresora',
-                        'network' => 'Red',
+                        'other' => 'Otro',
                     ])
                     ->required(),
 
                 Forms\Components\Select::make('status')
                     ->label('Estado')
                     ->options([
-                        'open' => 'Abierto',
-                        'in_progress' => 'En proceso',
-                        'closed' => 'Cerrado',
+                        'waiting' => 'En espera',
+                        'repairing' => 'En reparación',
+                        'ready' => 'Listo',
+                        'delivered' => 'Entregado',
                     ])
-                    ->default('open')
+                    ->default('waiting')
                     ->required(),
 
                 Forms\Components\Select::make('assigned_to')
@@ -76,26 +77,30 @@ class TicketResource extends Resource
                     ->colors([
                         'primary' => 'pc',
                         'warning' => 'printer',
-                        'success' => 'network',
+                        'secondary' => 'other',
                     ])
                     ->formatStateUsing(fn ($state) => match ($state) {
                         'pc' => 'PC',
                         'printer' => 'Impresora',
-                        'network' => 'Red',
+                        'other' => 'Otro',
                     }),
+
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Estado')
                     ->colors([
-                        'warning' => 'open',
-                        'info' => 'in_progress',
-                        'success' => 'closed',
+                        'warning' => 'waiting',
+                        'info' => 'repairing',
+                        'success' => 'ready',
+                        'gray' => 'delivered',
                     ])
                     ->formatStateUsing(fn ($state) => match ($state) {
-                        'open' => 'Abierto',
-                        'in_progress' => 'En proceso',
-                        'closed' => 'Cerrado',
+                        'waiting' => 'En espera',
+                        'repairing' => 'En reparación',
+                        'ready' => 'Listo',
+                        'delivered' => 'Entregado',
                     }),
+
 
                 Tables\Columns\TextColumn::make('creator.name')
                     ->label('Creado por'),
