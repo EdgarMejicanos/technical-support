@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Model;
 
 class TicketResource extends Resource
 {
@@ -26,12 +27,14 @@ class TicketResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->label('Título')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->disabled(fn () => auth()->user()->isTecnico()),
 
                 Forms\Components\Textarea::make('description')
                     ->label('Descripción del problema')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->disabled(fn () => auth()->user()->isTecnico()),
 
                 Forms\Components\Textarea::make('notes')
                     ->label('Notas internas')
@@ -48,7 +51,8 @@ class TicketResource extends Resource
                         'printer' => 'Impresora',
                         'other' => 'Otro',
                     ])
-                    ->required(),
+                    ->required()
+                    ->disabled(fn () => auth()->user()->isTecnico()),
 
                 Forms\Components\Select::make('status')
                     ->label('Estado')
@@ -68,7 +72,8 @@ class TicketResource extends Resource
                         titleAttribute: 'name'
                     )
                     ->searchable()
-                    ->nullable(),
+                    ->nullable()
+                    ->disabled(fn () => auth()->user()->isTecnico()),
             ]);
     }
 
@@ -130,6 +135,19 @@ class TicketResource extends Resource
                 Tables\Actions\EditAction::make(),
             ]);
     }
+
+    public static function canEdit(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user->isAdmin() || $user->isTecnico();
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->isAdmin();
+    }
+
 
     public static function getRelations(): array
     {
