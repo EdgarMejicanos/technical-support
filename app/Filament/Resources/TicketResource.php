@@ -98,6 +98,14 @@ class TicketResource extends Resource
                         return 'Q' . number_format(max(0, $total - $paid), 2);
                     }),
 
+                Forms\Components\Select::make('client_id')
+                    ->label('Cliente')
+                    ->relationship('client', 'name')
+                    ->searchable()
+                    ->required()
+                    ->preload(),
+
+
 
             ]);
     }

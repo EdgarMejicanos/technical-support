@@ -16,6 +16,8 @@ class Ticket extends Model
         'created_by',
         'assigned_to',
 
+        'client_id',
+
         // Pagos
         'total_amount',
         'paid_amount',
@@ -59,5 +61,11 @@ class Ticket extends Model
                     : 'pending';
         });
     }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
 
 }
