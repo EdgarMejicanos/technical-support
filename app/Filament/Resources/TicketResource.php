@@ -102,9 +102,26 @@ class TicketResource extends Resource
                     ->label('Cliente')
                     ->relationship('client', 'name')
                     ->searchable()
+                    ->preload()
                     ->required()
-                    ->preload(),
 
+                    //creating clients from ticket form
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
+                            ->required(),
+
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Teléfono')
+                            ->tel(),
+
+                        Forms\Components\TextInput::make('email')
+                            ->label('Correo')
+                            ->email(),
+
+                        Forms\Components\Textarea::make('address')
+                            ->label('Dirección'),
+                    ]),
 
 
             ]);
