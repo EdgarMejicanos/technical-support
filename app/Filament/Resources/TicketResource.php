@@ -123,8 +123,25 @@ class TicketResource extends Resource
                             ->label('Dirección'),
                     ]),
 
+                Forms\Components\Actions::make([
+                    Forms\Components\Actions\Action::make('verCliente')
+                        ->label('Ver cliente')
+                        ->icon('heroicon-o-eye')
+                        ->modalHeading('Datos del cliente')
+                        ->modalContent(function (callable $get) {
+                            $client = \App\Models\Client::find($get('client_id'));
 
-            ]);
+                            if (! $client) {
+                                return 'No hay cliente seleccionado';
+                            }
+
+                            return view('filament.modals.client-info', compact('client'));
+                        })
+                        ->visible(fn (callable $get) => filled($get('client_id'))),
+                ]),
+
+
+        ]);
     }
 
     public static function table(Table $table): Table
